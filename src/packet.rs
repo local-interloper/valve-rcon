@@ -86,7 +86,7 @@ impl TryFrom<&Vec<u8>> for Packet {
             _ => return Err(BufferParseError::from("Invalid packet type")),
         };
 
-        let body = value[12..size as usize - 2].to_vec();
+        let body = value[12..size as usize + 2].to_vec();
 
         Ok(Self {
             size,

@@ -54,10 +54,9 @@ impl TryFrom<&Vec<u8>> for Packet {
 
     fn try_from(value: &Vec<u8>) -> Result<Self, BufferParseError> {
         if value.len() < 4 {
-            return Err(BufferParseError {
-                description: "Failed to obtain packet size. Packet is smaller than 4 bytes"
-                    .to_string(),
-            });
+            return Err(BufferParseError::from(
+                "Failed to obtain packet size. Packet is smaller than 4 bytes",
+            ));
         }
 
         let size;
@@ -66,9 +65,9 @@ impl TryFrom<&Vec<u8>> for Packet {
         }
 
         if value.len() < size as usize + 4 {
-            return Err(BufferParseError {
-                description: "Buffer size is lower than the packet size".to_string(),
-            });
+            return Err(BufferParseError::from(
+                "Buffer size is lower than the packet size",
+            ));
         }
 
         let id;
@@ -87,7 +86,7 @@ impl TryFrom<&Vec<u8>> for Packet {
             _ => return Err(BufferParseError::from("Invalid packet type")),
         };
 
-        let body = value[12..size as usize + 2].to_vec();
+        let body = value[12..size as usize - 2].to_vec();
 
         Ok(Self {
             size,
